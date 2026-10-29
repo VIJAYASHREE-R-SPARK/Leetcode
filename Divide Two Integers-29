@@ -1,0 +1,18 @@
+class Solution {
+    public int divide(int dividend, int divisor) {
+        if (dividend == Integer.MIN_VALUE && divisor == -1) {
+            return Integer.MAX_VALUE;
+        }
+        boolean negative = (dividend < 0) != (divisor < 0);
+        long a = Math.abs((long) dividend);
+        long b = Math.abs((long) divisor);
+        long quotient = 0;
+        for (int shift = 31; shift >= 0; shift--) {
+            if ((b << shift) <= a) {
+                a -= b << shift;
+                quotient += 1L << shift;
+            }
+        }
+        return (int) (negative ? -quotient : quotient);
+    }
+}
