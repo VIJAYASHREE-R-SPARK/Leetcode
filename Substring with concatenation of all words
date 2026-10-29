@@ -1,0 +1,39 @@
+import java.util.*;
+class Solution {
+    public List<Integer> findSubstring(String s, String[] words) {
+        List<Integer> res = new ArrayList<>();
+        int n = s.length(), m = words.length, w = words[0].length();
+        if (n < m * w) return res;
+        Map<String, Integer> need = new HashMap<>();
+        for (String x : words) need.merge(x, 1, Integer::sum);
+        for (int offset = 0; offset < w; offset++) {
+            int left = offset, count = 0;
+            Map<String, Integer> seen = new HashMap<>();
+            for (int right = offset; right + w <= n; right += w) {
+                String word = s.substring(right, right + w);
+                if (need.containsKey(word)) {
+                    seen.merge(word, 1, Integer::sum);
+                    count++;
+                    while (seen.get(word) > need.get(word)) {
+                        String lw = s.substring(left, left + w);
+                        seen.merge(lw, -1, Integer::sum);
+                        count--;
+                        left += w;
+                    }
+                    if (count == m) {
+                        res.add(left);
+                        String lw = s.substring(left, left + w);
+                        seen.merge(lw, -1, Integer::sum);
+                        count--;
+                        left += w;
+                    }
+                } else {
+                    seen.clear();
+                    count = 0;
+                    left = right + w;
+                }
+            }
+        }
+        return res;
+    }
+}
